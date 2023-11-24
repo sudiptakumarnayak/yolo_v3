@@ -10,7 +10,7 @@ SKIP_CATEGORIES = ['drivable area', 'lane']
 label_index_map = {}
 
 JSON_FILE_PATH = '/Users/sanayak/Repositories/AI/object_detection/dataset/BDD_100k/labels/bdd100k_labels_images_val.json'
-LABELS_FILE_NAME = 'bdd10k.names'
+LABELS_FILE_NAME = 'obj.names'
 DATA_DIR = 'data'
 DATA_DIR_PATH = os.path.join(os.getcwd(), DATA_DIR)
 LABELS_FILE_PATH = os.path.join(DATA_DIR_PATH, LABELS_FILE_NAME)

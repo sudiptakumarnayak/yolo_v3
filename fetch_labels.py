@@ -23,7 +23,7 @@ def writeToFile(output_file_path, categories):
 if __name__ == '__main__':
     # folder_path = input('Enter the path to your folder: ')
     JSON_FILE_PATH = '/Users/sanayak/Repositories/AI/object_detection/dataset/BDD_100k/labels/bdd100k_labels_images_val.json'
-    OUTPUT_FILE_NAME = 'all_bdd10k.names'
+    OUTPUT_FILE_NAME = 'all_obj.names'
     output_file_path = os.path.join(os.getcwd(), OUTPUT_FILE_NAME)
     labels = fetchLabels(JSON_FILE_PATH)
     print(labels)
