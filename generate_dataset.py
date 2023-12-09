@@ -12,9 +12,9 @@ label_index_map = {}
 JSON_FILE_PATH = '/Users/sanayak/Repositories/AI/object_detection/dataset/BDD_100k/labels/bdd100k_labels_images_val.json'
 LABELS_FILE_NAME = 'obj.names'
 DATA_DIR = 'data'
+
 DATA_DIR_PATH = os.path.join(os.getcwd(), DATA_DIR)
 LABELS_FILE_PATH = os.path.join(DATA_DIR_PATH, LABELS_FILE_NAME)
-
 
 
 def create_label_map(file_path):
@@ -40,7 +40,7 @@ def process_json(json_file_path):
     class_dict = {}
 
     for item in data:
-        name = item.get('name')
+        name = item.get('name').strip()
         # name = os.path.splitext(name)[0] # only file name
         labels = item.get('labels', [])
         
@@ -141,14 +141,20 @@ def create_data(BDD_JSON_FILE_PATH, BDD_IMG_DIR_PATH, OUTPUT_FILE_PATH, TARGET_D
     image_dict = get_all_file_names(BDD_IMG_DIR_PATH) # image
     
     # Remove the classes for which image not available
-    print('No. of classes -', len(class_dict.keys()))
-    print('No. of images -', len(image_dict.keys()))
+    print('Total num of classes -', len(class_dict.keys()))
+    print('Total num of images -', len(image_dict.keys()))
     disjoint_keys_in_class_dict = class_dict.keys() - image_dict.keys()
     print('Keys for which image not available -', len(disjoint_keys_in_class_dict))
+    
     # common_keys = class_dict.keys() & image_dict.keys()
     # print('common_keys -', len(common_keys))
     if(len(disjoint_keys_in_class_dict) > 0):
         class_dict = remove_keys(class_dict, disjoint_keys_in_class_dict)
+    
+    disjoint_keys_in_image_dict = image_dict.keys() - class_dict.keys()
+    print('Unlabelled images -', len(disjoint_keys_in_image_dict))
+    if(len(disjoint_keys_in_image_dict) > 0):
+        image_dict = remove_keys(image_dict, disjoint_keys_in_image_dict)
     
 
     # create val.txt file - contains path to image file
@@ -158,7 +164,9 @@ def create_data(BDD_JSON_FILE_PATH, BDD_IMG_DIR_PATH, OUTPUT_FILE_PATH, TARGET_D
     # print(BDD_IMG_DIR_PATH)
     # print(TARGET_DIR_PATH)
     # Update the absolute path with relative path
-    replace_portion = lambda path: path.replace(str(BDD_IMG_DIR_PATH), str(TARGET_DIR_PATH))
+    PROJECT_ROOT_PATH = p = os.path.join(os.getcwd(), '')
+    CUSTOM_FILE_PATH = str(TARGET_DIR_PATH).removeprefix(str(PROJECT_ROOT_PATH))
+    replace_portion = lambda path: path.replace(str(BDD_IMG_DIR_PATH), str(CUSTOM_FILE_PATH))
     modified_image_dict = {key: replace_portion(value) for key, value in subset_image_dict.items()}
     writeToFile(OUTPUT_FILE_PATH, modified_image_dict.values()) # relative absolute path
 
@@ -174,6 +182,7 @@ def create_data(BDD_JSON_FILE_PATH, BDD_IMG_DIR_PATH, OUTPUT_FILE_PATH, TARGET_D
     recreate_dir(TARGET_DIR_PATH)
     populate_label_dir(TARGET_DIR_PATH, subset_class_dict, label_index_map)
     populate_image_dir(TARGET_DIR_PATH, subset_image_dict)
+    print('Num of files - ', len(os.listdir(TARGET_DIR_PATH)))
 
 
 
@@ -194,6 +203,7 @@ def populate_labels():
 if __name__ == '__main__':
     
     # To fetch all the labels run the fetch_labels.py
+
     create_dir('data')
 
     populate_labels()
@@ -208,8 +218,4 @@ if __name__ == '__main__':
     prepare_train_data()
     print('Successfully populated train dataset \n')
 
-    
 
-
-    
-    

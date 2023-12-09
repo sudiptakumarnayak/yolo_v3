@@ -58,3 +58,16 @@ def get_subset(original_dict, num_items):
 def fetch_elements_by_keys(original_dict, keys_to_fetch):
     fetched_elements = {key: original_dict[key] for key in keys_to_fetch if key in original_dict}
     return fetched_elements
+
+def read_config_file(file_path):
+    config = {}
+
+    with open(file_path, 'r') as file:
+        for line in file:
+            # Strip whitespace and split key and value
+            key, value = line.strip().split('=')
+            # print(key, value)
+            # Store key-value pair in the config dictionary
+            config[key] = value
+
+    return config
